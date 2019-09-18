@@ -16,11 +16,31 @@ describe HashCabinet do
     end
   end
 
-  describe '#[] and #[]=' do
-    it "saves a key/value pair" do
+  describe '#[]' do
+    it "returns the value at key" do
+      expect(subject['metallica']).to eq sample_value
+    end
+
+    context "with a non-string key" do
+      it "converts the key to a string and returns the value" do
+        expect(subject[:metallica]).to eq sample_value        
+      end
+    end
+  end
+
+  describe '#[]=' do
+    it "saves the value at key" do
       expect(subject['acdc']).to be_nil
       subject['acdc'] = new_value
       expect(subject['acdc']).to eq new_value
+    end
+
+    context "with a non-string key" do
+      it "converts the key to a string and saves the value" do
+        expect(subject['acdc']).to be_nil
+        subject[:acdc] = new_value
+        expect(subject['acdc']).to eq new_value
+      end
     end
   end
 
@@ -32,11 +52,25 @@ describe HashCabinet do
     end
   end
 
+  describe '#count' do
+    it "is the same as #length?" do
+      expect(subject.method :count).to eq(subject.method :length)
+    end
+  end
+
   describe '#delete' do
     it "deletes a key" do
       expect(subject['pantera']).to be_a Hash
       subject.delete 'pantera'
       expect(subject['pantera']).to be_nil
+    end
+
+    context "with a non-string key" do
+      it "converts the key to a string and deletes" do
+        expect(subject['pantera']).to be_a Hash
+        subject.delete :pantera
+        expect(subject['pantera']).to be_nil
+      end
     end
   end
   
@@ -101,6 +135,12 @@ describe HashCabinet do
       it "returns true" do
         expect(subject.has_key? 'pantera').to be true
       end
+
+      context "with a non-string key" do
+        it "returns true" do
+          expect(subject.has_key? :pantera).to be true
+        end
+      end
     end
 
     context "when the key does not exist" do
@@ -125,16 +165,8 @@ describe HashCabinet do
   end
 
   describe '#include?' do
-    context "when the key exists" do
-      it "returns true" do
-        expect(subject.include? 'pantera').to be true
-      end
-    end
-
-    context "when the key does not exist" do
-      it "returns false" do
-        expect(subject.include? 'sepultura').to be false
-      end
+    it "is the same as #has_key?" do
+      expect(subject.method :include?).to eq(subject.method :has_key?)
     end
   end
 
@@ -153,16 +185,8 @@ describe HashCabinet do
   end
 
   describe '#key?' do
-    context "when the key exists" do
-      it "returns true" do
-        expect(subject.key? 'pantera').to be true
-      end
-    end
-
-    context "when the key does not exist" do
-      it "returns false" do
-        expect(subject.key? 'sepultura').to be false
-      end
+    it "is the same as #has_key?" do
+      expect(subject.method :key?).to eq(subject.method :has_key?)
     end
   end
 
@@ -184,6 +208,16 @@ describe HashCabinet do
       subject.replace acdc: new_value
       expect(subject.size).to eq 1
       expect(subject['acdc'][:name]).to eq "AC/DC"
+    end
+
+    context "with an array instead of a hash" do
+      it "stores data as key=key pairs while maintaining value types" do
+        expect(subject.size).to eq 3
+        subject.replace [123, "456"]
+        expect(subject.size).to eq 2
+        expect(subject[123]).to eq 123
+        expect(subject[456]).to eq "456"
+      end
     end
   end
 
@@ -209,8 +243,8 @@ describe HashCabinet do
   end
 
   describe '#size' do
-    it "returns the database size" do
-      expect(subject.size).to eq 3
+    it "is the same as #length?" do
+      expect(subject.method :size).to eq(subject.method :length)
     end
   end
 
@@ -245,6 +279,17 @@ describe HashCabinet do
       expect(subject['metallica'][:active_to]).to eq 'Forever'
       expect(subject['acdc']).to eq new_value
     end
+
+    context "with an array instead of a hash" do
+      it "stores data as key=key pairs while maintaining value types" do
+        subject.update [123, "456"]
+
+        expect(subject.size).to eq 5
+        expect(subject[123]).to eq 123
+        expect(subject[456]).to eq '456'
+      end
+    end
+
   end
 
   describe '#value?' do
@@ -275,6 +320,15 @@ describe HashCabinet do
       expect(result).to be_an Array
       expect(result.first).to eq subject['metallica']
       expect(result.last).to eq subject['pantera']
+    end
+
+    context "with non-string keys" do
+      it "converts the keys to strings and returns the values" do
+        result = subject.values_at :metallica, :pantera
+        expect(result).to be_an Array
+        expect(result.first).to eq subject['metallica']
+        expect(result.last).to eq subject['pantera']
+      end
     end
   end
 
