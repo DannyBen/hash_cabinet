@@ -31,10 +31,12 @@ Usage
 --------------------------------------------------
 
 ```ruby
+require 'hash_cabinet'
+
 cabinet = HashCabinet.new 'dbfile'
 
 # Store values
-cabinet['some-key'] = 'some=value'
+cabinet['some-key'] = 'some-value'
 cabinet['another-key'] = { color: 'yellow' }
 
 # Retrieve values
