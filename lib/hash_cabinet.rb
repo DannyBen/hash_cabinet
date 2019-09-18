@@ -3,8 +3,8 @@ require 'yaml'
 
 class HashCabinet
 
-  # Refinements to allow using +from_yaml+ as the opposite of +to_yaml+.
-  module ReverseYAML
+  # Refinements for internal use
+  module Refinements
     refine String do
       def from_yaml
         YAML.load self
@@ -18,7 +18,7 @@ class HashCabinet
     end
   end
 
-  using ReverseYAML
+  using Refinements
 
   # Returns the path to the database file.
   attr_reader :path
@@ -45,12 +45,12 @@ class HashCabinet
 
   # Returns the value in the database associated with the given +key+.
   def [](key)
-    transaction { |db| db[key].from_yaml }
+    transaction { |db| db[key.to_s].from_yaml }
   end
 
   # Inserts or updates a value in the database with the given key as an index.
   def []=(key, value)
-    transaction { |db| db[key] = value.to_yaml }
+    transaction { |db| db[key.to_s] = value.to_yaml }
   end
 
   # Deletes all key-value pairs from the database.
@@ -60,7 +60,7 @@ class HashCabinet
 
   # Deletes the given `key` from the database.
   def delete(key)
-    transaction { |db| db.delete key }
+    transaction { |db| db.delete key.to_s }
   end
 
   # Iterates over the key-value pairs in the database, deleting those for
@@ -81,13 +81,11 @@ class HashCabinet
       end
     end
   end
-
   
   # Iterates over each key in the database.
   def each_key(&block)
     transaction { |db| db.each_key &block }
   end
-
   
   # Iterates over each key-value pair in the database.
   def each_value(&block)
@@ -105,17 +103,14 @@ class HashCabinet
 
   # Returns true if the database contains the given key.
   def has_key?(key)
-    transaction { |db| db.has_key? key }
+    transaction { |db| db.has_key? key.to_s }
   end
+  alias include? has_key?
+  alias key? has_key?
 
   # Returns +true+ if the database contains the given value.
   def has_value?(value)
     transaction { |db| db.has_value? value.to_yaml }
-  end
-
-  # Returns +true+ if the database contains the given key.
-  def include?(key)
-    transaction { |db| db.include? key }
   end
 
   # Returns the key associated with the given value. If more than one key
@@ -123,11 +118,6 @@ class HashCabinet
   # If no keys are found, +nil+ will be returned.
   def key(value)
     transaction { |db| db.key value.to_yaml }
-  end
-
-  # Returns +true+ if the database contains the given key.
-  def key?(key)
-    transaction { |db| db.key? key }
   end
 
   # Returns a new Array containing the keys in the database.
@@ -139,13 +129,21 @@ class HashCabinet
   def length
     transaction { |db| db.length }
   end
+  alias size length
+  alias count length
 
   # Empties the database, then inserts the given key-value pairs.
+  #
   # This method will work with any object which implements an +#each_pair+
-  # method, such as a Hash.
+  # method, such as a Hash, or with any object that implements an +#each+
+  # method, such as an Array. In this case, the array will be converted to 
+  # a `key=key` hash before storing it.
   def replace(data)
-    data = data.transform_values &:to_yaml
-    data = data.transform_keys &:to_s
+    if !data.respond_to? :each_pair and data.respond_to? :each
+      data = array_to_hash data
+    end
+
+    data = normalize_types data
     transaction { |db| db.replace data }
   end
 
@@ -168,11 +166,6 @@ class HashCabinet
     end
   end
 
-  # Returns the number of keys in the database.
-  def size
-    transaction { |db| db.size }
-  end
-
   # Returns a new Array containing each key-value pair in the database.
   def to_a
     transaction do |db| 
@@ -190,9 +183,15 @@ class HashCabinet
   # Insert or update key-value pairs.
   # 
   # This method will work with any object which implements an +#each_pair+
-  # method, such as a Hash.
+  # method, such as a Hash, or with any object that implements an +#each+
+  # method, such as an Array. In this case, the array will be converted to 
+  # a `key=key` hash before storing it.
   def update(data)
-    data = data.transform_values &:to_yaml
+    if !data.respond_to? :each_pair and data.respond_to? :each
+      data = array_to_hash data
+    end
+
+    data = normalize_types data
     transaction { |db| db.update data }
   end
 
@@ -211,8 +210,20 @@ class HashCabinet
   # Returns an Array of values corresponding to the given keys.
   def values_at(*key)
     transaction do |db| 
-      db.values_at(*key).map &:from_yaml
+      db.values_at(*(key.map &:to_s)).map &:from_yaml
     end
+  end
+
+private
+
+  def array_to_hash(array)
+    array.map { |item| [item, item] }.to_h
+  end
+
+  def normalize_types(hash)
+    hash.map do |key, value|
+      [key.to_s, value.to_yaml]
+    end.to_h
   end
 
 end
