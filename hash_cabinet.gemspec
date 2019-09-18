@@ -14,4 +14,10 @@ Gem::Specification.new do |s|
   s.homepage    = 'https://github.com/dannyben/hash_cabinet'
   s.license     = 'MIT'
   s.required_ruby_version = ">= 2.5.0"
+
+  s.metadata = {
+    "bug_tracker_uri"   => "https://github.com/DannyBen/hash_cabinet/issues",
+    "documentation_uri" => "https://rubydoc.info/gems/hash_cabinet/HashCabinet",
+    "source_code_uri"   => "https://github.com/dannyben/hash_cabinet",
+  }
 end

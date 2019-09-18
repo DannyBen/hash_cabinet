@@ -47,4 +47,12 @@ p cabinet.to_h
 
 ```
 
+Documentation
+--------------------------------------------------
+
+- [Documentation on RubyDoc][docs]
+
+
+
 [SDBM]: https://ruby-doc.org/stdlib-2.6.3/libdoc/sdbm/rdoc/SDBM.html
+[docs]: https://rubydoc.info/gems/hash_cabinet/HashCabinet
