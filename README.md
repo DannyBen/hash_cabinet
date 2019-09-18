@@ -2,6 +2,7 @@ Hash Cabinet - File based key-object store
 ==================================================
 
 [![Gem Version](https://badge.fury.io/rb/hash_cabinet.svg)](https://badge.fury.io/rb/hash_cabinet)
+[![Build Status](https://travis-ci.com/DannyBen/hash_cabinet.svg?branch=master)](https://travis-ci.com/DannyBen/hash_cabinet)
 
 ---
 
@@ -41,7 +42,7 @@ p cabinet['another-key']
 
 # Show all values
 p cabinet.to_h
-#=> {"some-key"=>"some=value", "another-key"=>{:color=>"yellow"}
+#=> {"some-key"=>"some=value", "another-key"=>{:color=>"yellow"}}
 
 ```
 
