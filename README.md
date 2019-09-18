@@ -3,6 +3,7 @@ Hash Cabinet - File based key-object store
 
 [![Gem Version](https://badge.fury.io/rb/hash_cabinet.svg)](https://badge.fury.io/rb/hash_cabinet)
 [![Build Status](https://travis-ci.com/DannyBen/hash_cabinet.svg?branch=master)](https://travis-ci.com/DannyBen/hash_cabinet)
+[![Maintainability](https://api.codeclimate.com/v1/badges/c69f9676cd8cd5fc33bc/maintainability)](https://codeclimate.com/github/DannyBen/hash_cabinet/maintainability)
 
 ---
 
