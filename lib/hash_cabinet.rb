@@ -28,17 +28,20 @@ class HashCabinet
     @path = path
   end
 
-  # Yields the +SDBM+ object to the block. Under most circumstances, this
-  # method should not be used directly, as it is used by all other methods.
+  # Yields the +SDBM+ object to the block. 
   #
-  # Example:
-  #
+  # @example
   #   cabinet = HashCabinet.new 'filename'
   #
   #   cabinet.transaction do |db|
   #     db.clear
   #   end
   #
+  # @note 
+  #   Under most circumstances, this method should not be used directly, 
+  #   as it is used by all other methods.
+  #
+  # @yieldparam [SDBM] db the {SDBM} instance
   def transaction(&block)
     SDBM.open path, &block
   end
@@ -65,6 +68,16 @@ class HashCabinet
 
   # Iterates over the key-value pairs in the database, deleting those for
   # which the block returns true.
+  # 
+  # @example Delete all records with +age < 18+.
+  #   cabinet = HashCabinet.new 'filename'
+  #
+  #   cabinet.delete_if do |key, value|
+  #     value[:age] < 18
+  #   end
+  #
+  # @yieldparam [String] key the pair key
+  # @yieldparam [Object] value the pair value
   def delete_if(&block)
     transaction do |db|
       db.delete_if do |key, value|
@@ -74,6 +87,9 @@ class HashCabinet
   end
 
   # Iterates over each key-value pair in the database.
+  #
+  # @yieldparam [String] key the pair key
+  # @yieldparam [Object] value the pair value
   def each(&block)
     transaction do |db|
       db.each do |key, value|
@@ -83,11 +99,15 @@ class HashCabinet
   end
   
   # Iterates over each key in the database.
+  #
+  # @yieldparam [String] key the pair key
   def each_key(&block)
     transaction { |db| db.each_key &block }
   end
   
   # Iterates over each key-value pair in the database.
+  #
+  # @yieldparam [Object] value the pair value
   def each_value(&block)
     transaction do |db|
       db.each_value do |value|
@@ -96,36 +116,39 @@ class HashCabinet
     end
   end
 
-  # Returns +true+ if the database is empty.
+  # @return [Boolean] +true+ if the database is empty.
   def empty?
     transaction { |db| db.empty? }
   end
 
-  # Returns true if the database contains the given key.
+  # @return [Boolean] +true+ if the database contains the given key.
   def has_key?(key)
     transaction { |db| db.has_key? key.to_s }
   end
   alias include? has_key?
   alias key? has_key?
 
-  # Returns +true+ if the database contains the given value.
+  # @return [Boolean] +true+ if the database contains the given value.
   def has_value?(value)
     transaction { |db| db.has_value? value.to_yaml }
   end
 
-  # Returns the key associated with the given value. If more than one key
-  # corresponds to the given value, then the first key will be returned.
+  # Returns the key associated with the given value.
+  #
+  # If more than one key corresponds to the given value, then the first key will be returned.
   # If no keys are found, +nil+ will be returned.
+  #
+  # @return [String] the key associated with the given value. 
   def key(value)
     transaction { |db| db.key value.to_yaml }
   end
 
-  # Returns a new Array containing the keys in the database.
+  # @return [Array] a new Array containing the keys in the database.
   def keys
     transaction { |db| db.keys }
   end
 
-  # Returns the number of keys in the database.
+  # @return [Integer] the number of keys in the database.
   def length
     transaction { |db| db.length }
   end
@@ -138,6 +161,12 @@ class HashCabinet
   # method, such as a Hash, or with any object that implements an +#each+
   # method, such as an Array. In this case, the array will be converted to 
   # a `key=key` hash before storing it.
+  # 
+  # @example
+  #   cabinet = HashCabinet.new 'filename'
+  #   cabinet.replace key1: 'value1', key2: 'value2'
+  #
+  # @param [Object] data the data to store
   def replace(data)
     if !data.respond_to? :each_pair and data.respond_to? :each
       data = array_to_hash data
@@ -147,7 +176,7 @@ class HashCabinet
     transaction { |db| db.replace data }
   end
 
-  # Returns a new Hash of key-value pairs for which the block returns true.
+  # @return [Hash] a new Hash of key-value pairs for which the block returns true.
   def select(&block)
     transaction do |db|
       db.select do |key, value|
@@ -159,6 +188,8 @@ class HashCabinet
   # Removes a key-value pair from the database and returns them as an Array.
   #
   # If the database is empty, returns nil.
+  #
+  # @return [Array] the key and value.
   def shift
     transaction do |db| 
       result = db.shift
@@ -166,26 +197,33 @@ class HashCabinet
     end
   end
 
-  # Returns a new Array containing each key-value pair in the database.
+  # @return [Array] a new array containing each key-value pair in the 
+  #   database.
   def to_a
     transaction do |db| 
       db.to_a.map { |pair| [pair[0], pair[1].from_yaml] }
     end
   end
 
-  # Returns a new Hash containing each key-value pair in the database.
+  # @return [hash] a new hash containing each key-value pair in the database.
   def to_h
     transaction do |db| 
       db.to_h.transform_values &:from_yaml
     end
   end
 
-  # Insert or update key-value pairs.
+  # Inserts or updates key-value pairs.
   # 
   # This method will work with any object which implements an +#each_pair+
   # method, such as a Hash, or with any object that implements an +#each+
   # method, such as an Array. In this case, the array will be converted to 
   # a `key=key` hash before storing it.
+  #
+  # @example
+  #   cabinet = HashCabinet.new 'filename'
+  #   cabinet.update key1: 'value1', key2: 'value2'
+  #
+  # @param [Object] data the data to store
   def update(data)
     if !data.respond_to? :each_pair and data.respond_to? :each
       data = array_to_hash data
@@ -195,19 +233,19 @@ class HashCabinet
     transaction { |db| db.update data }
   end
 
-  # Returns +true+ if the database contains the given value.
+  # @return [Boolean] +true+ if the database contains the given value.
   def value?(value)
     transaction { |db| db.value? value.to_yaml }
   end
 
-  # Returns a new Array containing the values in the database.
+  # @return [Array] a new array containing the values in the database.
   def values
     transaction do |db| 
       db.values.map &:from_yaml
     end
   end
 
-  # Returns an Array of values corresponding to the given keys.
+  # @return [Array] an Array of values corresponding to the given keys.
   def values_at(*key)
     transaction do |db| 
       db.values_at(*(key.map &:to_s)).map &:from_yaml
