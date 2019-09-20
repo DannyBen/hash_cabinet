@@ -1,5 +1,6 @@
 /tmp
 /spec/tmp
+/benchmark/tmp
 /coverage
 /dev
 /doc

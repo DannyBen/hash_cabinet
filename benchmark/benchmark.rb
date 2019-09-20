@@ -1,21 +1,16 @@
-require "bundler/inline"
 require "yaml/store"
-require 'benchmark'
 require 'pstore'
+require 'hash_cabinet'
+require "sqlite3"
 
-gemfile do
-  source "https://rubygems.org"
-  gem 'hash_cabinet'
-  gem "benchmark-memory"
-  gem "sqlite3"
-end
+require './bm'
 
 # Config
 repeat = 500
 test_hash_cabinet = true
 test_sqlite       = true
 test_pstore       = true
-test_yaml_store   = true
+test_yaml_store   = false
 
 # Preparations
 def sample_object
@@ -26,6 +21,8 @@ cabinet_file    = 'tmp/hash_cabinet'
 pstore_file     = 'tmp/pstore.pstore'
 yaml_store_file = 'tmp/store.yml'
 sqlite_file     = 'tmp/db.sqlite'
+
+Dir.mkdir 'tmp' unless Dir.exist? 'tmp'
 
 if test_hash_cabinet
   puts "Initializing HashCabinet..."
@@ -73,53 +70,30 @@ if test_sqlite
   end
 end
 
-puts "\n\nBenchmark ------------------------------------------------\n\n"
-Benchmark.bmbm 12 do |bm|
-  if test_hash_cabinet
-    bm.report 'HashCabinet' do
-      repeat.times { |i| cabinet["key#{i}"] }
-    end
-  end
+bm = BM.new
 
-  if test_sqlite
-    bm.report 'SQLite' do
-      repeat.times do |i|
-        sqlite.execute( "select * from data where key = 'key#{i}'" )
-      end
-    end
+if test_hash_cabinet
+  bm.add('HashCabinet') do |i|
+    cabinet["key#{i}"]
   end
-
-  if test_pstore
-    bm.report 'PStore' do
-      repeat.times { |i| pstore.transaction { pstore["key#{i}"] } }
-    end
-  end
-
-  if test_yaml_store
-    bm.report 'YAML::Store' do
-      repeat.times { |i| ystore.transaction { ystore["key#{i}"] } }
-    end
-  end
-
 end
 
-puts "\n\nMemory Benchmark -----------------------------------------\n\n"
-Benchmark.memory do |x|
-  if test_hash_cabinet
-    x.report("HashCabinet") { cabinet['key1'] }
+if test_sqlite
+  bm.add('SQLite') do |i|
+    sqlite.execute( "select * from data where key = 'key#{i}'" )
   end
-
-  if test_sqlite
-    x.report("SQLite") { sqlite.execute( "select * from data where key = 'key1'" ) }
-  end
-  
-  if test_pstore
-    x.report("PStore") { pstore.transaction { pstore["key#1"] } }
-  end
-
-  if test_yaml_store
-    x.report("YAML::Store") { ystore.transaction { ystore["key1"] } }
-  end
-
-  x.compare!
 end
+
+if test_pstore
+  bm.add('PStore') do |i|
+    pstore.transaction { pstore["key#{i}"] }
+  end
+end
+
+if test_yaml_store
+  bm.add('YAML::Store') do |i|
+    ystore.transaction { ystore["key#{i}"] }
+  end
+end
+
+bm.time repeat
