@@ -1,12 +1,15 @@
 require "yaml/store"
 require 'pstore'
+require 'colsole'
 require 'hash_cabinet'
 require "sqlite3"
 
 require './bm'
 
+include Colsole
+
 # Config
-repeat = 500
+repeat = 1000
 test_hash_cabinet = true
 test_sqlite       = true
 test_pstore       = true
@@ -23,6 +26,8 @@ yaml_store_file = 'tmp/store.yml'
 sqlite_file     = 'tmp/db.sqlite'
 
 Dir.mkdir 'tmp' unless Dir.exist? 'tmp'
+
+say "!txtgrn!Initializing #{repeat} objects"
 
 if test_hash_cabinet
   puts "Initializing HashCabinet..."
@@ -96,4 +101,4 @@ if test_yaml_store
   end
 end
 
-bm.time repeat
+bm.run repeat

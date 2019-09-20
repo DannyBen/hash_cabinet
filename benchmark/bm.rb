@@ -17,7 +17,7 @@ class BM
     tests[label] = block
   end
 
-  def run(loops = 10)
+  def run(loops=10)
     memory
     time loops
   end
@@ -37,6 +37,8 @@ class BM
 
   def time(loops=10)
     @loops = loops
+    @results = {}
+
     say "!txtgrn!Starting execution time benchmark (#{loops} loops)"
     bar = TTY::ProgressBar.new "Running [:bar]", total: loops * tests.size
 
