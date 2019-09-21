@@ -1,6 +1,8 @@
 require 'sdbm'
 require 'yaml'
 
+# @!attribute [r] path
+#   @return [String] the path to the database file
 class HashCabinet
 
   # Refinements for internal use
@@ -20,10 +22,11 @@ class HashCabinet
 
   using Refinements
 
-  # Returns the path to the database file.
   attr_reader :path
 
-  # Initialize a new database file at {path}.
+  # Initialize a new database file at {path}
+  #
+  # @param [String] path the path to the database file
   def initialize(path)
     @path = path
   end
@@ -46,7 +49,7 @@ class HashCabinet
     SDBM.open path, &block
   end
 
-  # Returns the value in the database associated with the given +key+.
+  # @return [Object] the value in the database associated with the given +key+.
   def [](key)
     transaction { |db| db[key.to_s].from_yaml }
   end
