@@ -41,7 +41,7 @@ cabinet['another-key'] = { color: 'yellow' }
 
 # Retrieve values
 p cabinet['another-key']
-#=> {:color=>"yellow", :shape=>"circle"}
+#=> {:color=>"yellow"}
 
 # Show all values
 p cabinet.to_h
