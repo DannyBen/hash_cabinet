@@ -24,7 +24,7 @@ class HashCabinet
 
   attr_reader :path
 
-  # Initialize a new database file at {path}
+  # Initializes a new database file at {path}
   #
   # @param [String] path the path to the database file
   def initialize(path)
