@@ -105,7 +105,7 @@ class HashCabinet
   #
   # @yieldparam [String] key the pair key
   def each_key(&block)
-    transaction { |db| db.each_key &block }
+    transaction { |db| db.each_key(&block) }
   end
   
   # Iterates over each key-value pair in the database.
