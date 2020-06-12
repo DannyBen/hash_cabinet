@@ -9,6 +9,7 @@ summary "Runfile tasks for building the Hash Cabinet gem"
 RunfileTasks::RubyGems.all 'hash_cabinet'
 RunfileTasks::Testing.rspec
 RunfileTasks::Docs.rdoc
+RunfileTasks::Changelog.generator 'DannyBen/hash_cabinet'
 
 help   "Run interactive console"
 action :console, :c do
