@@ -15,6 +15,8 @@ Gem::Specification.new do |s|
   s.license     = 'MIT'
   s.required_ruby_version = ">= 2.5.0"
 
+  s.add_runtime_dependency 'sdbm', "~> 1.0"
+
   s.metadata = {
     "bug_tracker_uri"   => "https://github.com/DannyBen/hash_cabinet/issues",
     "documentation_uri" => "https://rubydoc.info/gems/hash_cabinet/HashCabinet",
