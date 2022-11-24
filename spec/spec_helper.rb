@@ -11,11 +11,11 @@ def create_dummy_db
   cabinet = HashCabinet.new 'tmp/specdb'
 
   data = {
-    "metallica" => { name: "Metallica",
+    'metallica'   => { name: 'Metallica',
       active_since: 1981, active_to: 'Present' },
-    "iron-maiden" => { name: "Iron Maiden",
+    'iron-maiden' => { name: 'Iron Maiden',
       active_since: 1975, active_to: 'Present' },
-    "pantera" => { name: "Pantera",
+    'pantera'     => { name: 'Pantera',
       active_since: 1981, active_to: 2003 },
   }
 

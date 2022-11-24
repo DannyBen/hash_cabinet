@@ -1,8 +1,8 @@
-require "yaml/store"
+require 'yaml/store'
 require 'pstore'
 require 'colsole'
 require 'hash_cabinet'
-require "sqlite3"
+require 'sqlite3'
 
 require './bm'
 
@@ -17,7 +17,7 @@ test_yaml_store   = false
 
 # Preparations
 def sample_object
-  { some: 'object', random: rand(1..99999) }
+  { some: 'object', random: rand(1..99_999) }
 end
 
 cabinet_file    = 'tmp/hash_cabinet'
@@ -30,7 +30,7 @@ Dir.mkdir 'tmp' unless Dir.exist? 'tmp'
 say "!txtgrn!Initializing #{repeat} objects"
 
 if test_hash_cabinet
-  puts "Initializing HashCabinet..."
+  puts 'Initializing HashCabinet...'
   cabinet = HashCabinet.new cabinet_file
   cabinet.transaction do |db|
     db.clear
@@ -38,8 +38,8 @@ if test_hash_cabinet
   end
 end
 
-if test_pstore 
-  puts "Initializing Pstore..."
+if test_pstore
+  puts 'Initializing Pstore...'
   File.delete pstore_file if File.exist? pstore_file
   pstore = PStore.new(pstore_file)
   pstore.transaction do
@@ -49,7 +49,7 @@ if test_pstore
 end
 
 if test_yaml_store
-  puts "Initializing YAML::Store..."
+  puts 'Initializing YAML::Store...'
   File.delete yaml_store_file if File.exist? yaml_store_file
   ystore = YAML::Store.new yaml_store_file
   ystore.transaction do
@@ -59,11 +59,11 @@ if test_yaml_store
 end
 
 if test_sqlite
-  puts "Initializing SQLite..."
+  puts 'Initializing SQLite...'
   File.delete sqlite_file if File.exist? sqlite_file
   sqlite = SQLite3::Database.new sqlite_file
   sqlite.results_as_hash = true
-  rows = sqlite.execute <<-SQL
+  sqlite.execute <<-SQL
     create table data (
       key varchar(30),
       val varchar(30)
@@ -71,7 +71,7 @@ if test_sqlite
   SQL
 
   repeat.times do |i|
-    sqlite.execute "insert into data values ( ?, ? )", "key#{i}", sample_object.to_yaml
+    sqlite.execute 'insert into data values ( ?, ? )', "key#{i}", sample_object.to_yaml
   end
 end
 
@@ -85,7 +85,7 @@ end
 
 if test_sqlite
   bm.add('SQLite') do |i|
-    sqlite.execute( "select * from data where key = 'key#{i}'" )
+    sqlite.execute("select * from data where key = 'key#{i}'")
   end
 end
 
