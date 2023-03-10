@@ -1,19 +1,12 @@
-require "runfile-tasks"
 require "byebug"
 require "lp"
-require_relative 'lib/hash_cabinet'
+require 'hash_cabinet/version'
 
 title   "Hash Cabinet Developer Toolbelt"
 summary "Runfile tasks for building the Hash Cabinet gem"
 
-RunfileTasks::RubyGems.all 'hash_cabinet'
-RunfileTasks::Testing.rspec
-RunfileTasks::Docs.rdoc
-
-help   "Run interactive console"
-action :console, :c do
-  system "bundle exec bin/console"
-end
+import_gem 'runfile-tasks/gem'
+import 'debug'
 
 help   "Run YARD server"
 action :yard do
@@ -26,5 +19,3 @@ action :changelog do
   # append older changelog (prior to switching to git-changelog)
   system "cat .changelog.old.md >> CHANGELOG.md"
 end
-
-require_relative 'debug' if File.exist? 'debug.rb'

@@ -23,7 +23,7 @@ class BM
   end
 
   def memory
-    say '!txtgrn!Starting memory benchmark'
+    say 'g`Starting memory benchmark`'
 
     Benchmark.memory do |x|
       tests.each do |label, block|
@@ -39,7 +39,7 @@ class BM
     @loops = loops
     @results = {}
 
-    say "!txtgrn!Starting execution time benchmark (#{loops} loops)"
+    say "g`Starting execution time benchmark (#{loops} loops)`"
     bar = TTY::ProgressBar.new 'Running [:bar]', total: loops * tests.size
 
     loops.times do |i|

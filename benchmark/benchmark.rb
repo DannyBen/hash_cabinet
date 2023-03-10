@@ -27,7 +27,7 @@ sqlite_file     = 'tmp/db.sqlite'
 
 Dir.mkdir 'tmp' unless Dir.exist? 'tmp'
 
-say "!txtgrn!Initializing #{repeat} objects"
+say "g`Initializing #{repeat} objects`"
 
 if test_hash_cabinet
   puts 'Initializing HashCabinet...'

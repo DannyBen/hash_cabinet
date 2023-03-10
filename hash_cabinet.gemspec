@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.files       = Dir['README.md', 'lib/**/*.*']
   s.homepage    = 'https://github.com/dannyben/hash_cabinet'
   s.license     = 'MIT'
-  s.required_ruby_version = '>= 2.6.0'
+  s.required_ruby_version = '>= 2.7'
 
   s.add_runtime_dependency 'sdbm', '~> 1.0'
 
