@@ -1,4 +1,4 @@
-require "byebug"
+require "debug"
 require "lp"
 require 'hash_cabinet/version'
 
