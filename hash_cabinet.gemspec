@@ -12,9 +12,9 @@ Gem::Specification.new do |s|
   s.files       = Dir['README.md', 'lib/**/*.*']
   s.homepage    = 'https://github.com/dannyben/hash_cabinet'
   s.license     = 'MIT'
-  s.required_ruby_version = '>= 2.7'
+  s.required_ruby_version = '>= 3.0'
 
-  s.add_runtime_dependency 'sdbm', '~> 1.0'
+  s.add_dependency 'sdbm', '~> 1.0'
 
   s.metadata = {
     'bug_tracker_uri'       => 'https://github.com/DannyBen/hash_cabinet/issues',

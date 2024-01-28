@@ -87,7 +87,7 @@ describe HashCabinet do
   describe '#each' do
     it 'yields each record to the block' do
       result = []
-      subject.each do |_key, value|
+      subject.each_value do |value|
         result << value[:name]
       end
       expect(result).to eq ['Metallica', 'Iron Maiden', 'Pantera']
