@@ -1,11 +1,5 @@
 # Hash Cabinet - File based key-object store
 
-[![Gem Version](https://badge.fury.io/rb/hash_cabinet.svg)](https://badge.fury.io/rb/hash_cabinet)
-[![Build Status](https://github.com/DannyBen/hash_cabinet/workflows/Test/badge.svg)](https://github.com/DannyBen/hash_cabinet/actions?query=workflow%3ATest)
-[![Maintainability](https://api.codeclimate.com/v1/badges/c69f9676cd8cd5fc33bc/maintainability)](https://codeclimate.com/github/DannyBen/hash_cabinet/maintainability)
-
----
-
 Hash Cabinet is a file-based, key-object store with hash-like access.
 
 
