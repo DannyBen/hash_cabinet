@@ -1,5 +1,7 @@
 # Hash Cabinet - File based key-object store
 
+![repocard](repocard.svg)
+
 Hash Cabinet is a file-based, key-object store with hash-like access.
 
 

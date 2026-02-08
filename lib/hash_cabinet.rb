@@ -44,8 +44,8 @@ class HashCabinet
   #   as it is used by all other methods.
   #
   # @yieldparam [SDBM] db the {SDBM} instance
-  def transaction(&block)
-    SDBM.open path, &block
+  def transaction(&)
+    SDBM.open(path, &)
   end
 
   # @return [Object] the value in the database associated with the given +key+.
